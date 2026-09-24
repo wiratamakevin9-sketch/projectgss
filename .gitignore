@@ -1,0 +1,32 @@
+# Environment & secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Dependencies & build output
+node_modules/
+dist/
+build/
+.cache/
+
+# Logs & temp
+*.log
+npm-debug.log*
+*.tmp
+*.bak
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor
+.vscode/
+.idea/
+*.swp
+
+# Deployment tools
+.vercel/
+.netlify/
