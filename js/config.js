@@ -43,8 +43,8 @@ window.SITE_CONFIG = {
 
   contact: {
     /* Isi dengan format 628123456789 (tanpa + dan tanpa 0 di depan). */
-    whatsapp: "WHATSAPP_NUMBER_HERE",
-    whatsappDisplay: "WHATSAPP_NUMBER_HERE",
+    whatsapp: "6281237554063",
+    whatsappDisplay: "+62 812-3755-4063",
     instagram: "",                     // isi username tanpa @
     tiktok: "",
     facebook: "",
