@@ -17,6 +17,21 @@
   $("#chatTitle").textContent = C.chat.assistantName;
   $("#chatSub").textContent = C.chat.subtitle;
 
+  /* ---------- Ponsel ----------
+     Keyboard iOS tidak mengecilkan layout viewport, jadi chat layar penuh
+     mengikuti visualViewport agar kolom input tetap terlihat. */
+  var touch = window.matchMedia("(pointer: coarse)").matches;
+  var vv = window.visualViewport;
+  function fitViewport() {
+    if (!vv || chat.hidden) return;
+    chat.style.setProperty("--vv-h", vv.height + "px");
+    chat.style.setProperty("--vv-top", vv.offsetTop + "px");
+  }
+  if (vv) {
+    vv.addEventListener("resize", function () { fitViewport(); scrollDown(); });
+    vv.addEventListener("scroll", fitViewport);
+  }
+
   /* ---------- UI ---------- */
   function scrollDown() { body.scrollTop = body.scrollHeight; }
 
@@ -93,10 +108,14 @@
       setTimeout(function () { typing(false); addMsg("bot", C.chat.greeting); }, 650);
     }
     if (prefill) setTimeout(function () { send(prefill); }, first ? 800 : 0);
-    setTimeout(function () { input.focus(); }, 60);
+    document.body.classList.add("chat-open");
+    fitViewport();
+    // Di ponsel, jangan langsung memunculkan keyboard yang menutupi percakapan
+    setTimeout(function () { (touch ? $("#chatClose") : input).focus(); }, 60);
   }
   function close() {
     chat.hidden = true;
+    document.body.classList.remove("chat-open");
     M.fab.classList.remove("is-hidden");
     if (lastFocus && lastFocus.focus) lastFocus.focus();
   }

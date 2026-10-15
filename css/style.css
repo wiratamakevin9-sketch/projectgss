@@ -48,6 +48,8 @@ html {
     scroll-behavior: smooth;
     scroll-padding-top: calc(var(--nav-h) + 28px);
     -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
 }
 
 body {
@@ -59,6 +61,14 @@ body {
     background: var(--white);
     -webkit-font-smoothing: antialiased;
     overflow-x: hidden;
+}
+
+/* iOS Safari mengabaikan overflow-x: hidden di body; clip menahan geser horizontal tanpa merusak navbar sticky */
+@supports (overflow: clip) {
+    html,
+    body {
+        overflow-x: clip;
+    }
 }
 
 body.no-scroll {
@@ -131,12 +141,21 @@ em {
     width: 100%;
     max-width: 1180px;
     margin-inline: auto;
-    padding-inline: 20px;
+    padding-left: max(20px, env(safe-area-inset-left));
+    padding-right: max(20px, env(safe-area-inset-right));
 }
 
 @media (min-width: 768px) {
     .wrap {
-        padding-inline: 32px;
+        padding-left: max(32px, env(safe-area-inset-left));
+        padding-right: max(32px, env(safe-area-inset-right));
+    }
+}
+
+@media (max-width: 360px) {
+    .wrap {
+        padding-left: max(16px, env(safe-area-inset-left));
+        padding-right: max(16px, env(safe-area-inset-right));
     }
 }
 
@@ -443,7 +462,7 @@ em {
     position: sticky;
     top: 0;
     z-index: 50;
-    padding: 12px 14px 0;
+    padding: 12px max(14px, env(safe-area-inset-right)) 0 max(14px, env(safe-area-inset-left));
     margin-bottom: calc(-1 * (var(--nav-h) + 12px));
     pointer-events: none;
 }
@@ -604,6 +623,10 @@ em {
         border: 1px solid var(--line);
         border-radius: 26px;
         box-shadow: var(--shadow-lg);
+        max-height: calc(100vh - var(--nav-h) - 40px);
+        max-height: calc(100dvh - var(--nav-h) - 40px);
+        overflow-y: auto;
+        overscroll-behavior: contain;
         opacity: 0;
         transform: translateY(-10px) scale(.98);
         transform-origin: top center;
@@ -626,7 +649,7 @@ em {
     }
 }
 
-@media (max-width: 400px) {
+@media (max-width: 480px) {
     .nav__cta-long {
         display: none;
     }
@@ -637,6 +660,44 @@ em {
 
     .logo__text {
         font-size: 16px;
+    }
+}
+
+@media (max-width: 360px) {
+    .nav {
+        padding-left: max(10px, env(safe-area-inset-left));
+        padding-right: max(10px, env(safe-area-inset-right));
+    }
+
+    .nav__bar {
+        gap: 10px;
+        padding: 0 7px 0 12px;
+    }
+
+    .logo {
+        gap: 8px;
+    }
+
+    .logo__mark {
+        width: 32px;
+        height: 32px;
+    }
+
+    .logo__text {
+        font-size: 15px;
+    }
+
+    .nav__right {
+        gap: 6px;
+    }
+
+    .nav__cta {
+        padding: 0 16px;
+    }
+
+    .nav__burger {
+        width: 42px;
+        height: 42px;
     }
 }
 
@@ -1833,6 +1894,7 @@ em {
 
 .plan__top {
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
     align-items: flex-start;
     gap: 10px;
@@ -1876,7 +1938,7 @@ em {
 }
 
 .plan__price {
-    font-size: 44px;
+    font-size: clamp(36px, 11vw, 44px);
     font-weight: 700;
     color: var(--deep);
     letter-spacing: -.04em;
@@ -1952,6 +2014,16 @@ em {
         max-width: 460px;
         margin-inline: auto;
         gap: 30px;
+    }
+}
+
+@media (max-width: 400px) {
+    .plan {
+        padding: 30px 22px 24px;
+    }
+
+    .plan__badge {
+        left: 22px;
     }
 }
 
@@ -2449,7 +2521,7 @@ em {
     }
 
     .footer {
-        padding-bottom: 110px;
+        padding-bottom: calc(110px + env(safe-area-inset-bottom, 0px));
     }
 }
 
@@ -2614,7 +2686,7 @@ em {
 /* ---------- Tombol chat ---------- */
 .fab {
     position: fixed;
-    right: 18px;
+    right: calc(18px + env(safe-area-inset-right, 0px));
     bottom: calc(18px + env(safe-area-inset-bottom, 0px));
     z-index: 60;
     height: 56px;
@@ -2685,17 +2757,18 @@ em {
 @media (max-width: 480px) {
     .fab {
         padding: 0 20px 0 16px;
-        right: 14px;
+        right: calc(14px + env(safe-area-inset-right, 0px));
     }
 }
 
 /* ---------- Chat (kaca) ---------- */
 .chat {
     position: fixed;
-    right: 18px;
+    right: calc(18px + env(safe-area-inset-right, 0px));
     bottom: calc(18px + env(safe-area-inset-bottom, 0px));
     z-index: 70;
     width: min(400px, calc(100vw - 24px));
+    height: min(640px, calc(100vh - 36px));
     height: min(640px, calc(100dvh - 36px));
     display: flex;
     flex-direction: column;
@@ -2798,6 +2871,8 @@ em {
 .chat__body {
     flex: 1;
     overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
     padding: 18px 16px 8px;
     display: flex;
     flex-direction: column;
@@ -3026,7 +3101,7 @@ em {
     border: 1px solid var(--line);
     padding: 0 18px;
     font: inherit;
-    font-size: 15px;
+    font-size: 16px;
     color: var(--ink);
     background: rgba(255, 255, 255, .85);
 }
@@ -3069,16 +3144,41 @@ em {
 }
 
 @media (max-width: 480px) {
+
+    /* --vv-* diisi chat.js dari visualViewport agar kolom input tetap di atas keyboard iOS */
     .chat {
         right: 0;
         left: 0;
-        bottom: 0;
+        top: var(--vv-top, 0px);
+        bottom: auto;
         width: 100%;
-        height: 100dvh;
+        height: 100vh;
+        height: var(--vv-h, 100dvh);
         border-radius: 0;
         border: 0;
         background: rgba(250, 253, 254, .94);
         padding-bottom: env(safe-area-inset-bottom, 0px);
+        animation-name: sheet;
+    }
+
+    .chat__head {
+        padding-top: calc(16px + env(safe-area-inset-top, 0px));
+    }
+
+    body.chat-open {
+        overflow: hidden;
+    }
+}
+
+@keyframes sheet {
+    from {
+        opacity: 0;
+        transform: translateY(24px);
+    }
+
+    to {
+        opacity: 1;
+        transform: none;
     }
 }
 
@@ -3097,6 +3197,115 @@ em {
     box-shadow: var(--shadow-lg);
     max-width: calc(100vw - 32px);
     text-align: center;
+}
+
+/* ---------- Ponsel dan layar sentuh (Android dan iPhone) ---------- */
+
+/* Efek hover "melayang" tidak menempel setelah disentuh */
+@media (hover: none) {
+
+    .btn:hover,
+    .pillar:hover,
+    .benefit:hover,
+    .step:hover,
+    .plan:hover,
+    .why__item:hover,
+    .carousel__nav button:hover,
+    .social a:hover,
+    .footer__list a:hover,
+    .fab:hover,
+    .chat__form button:hover,
+    .chat__quick button:hover,
+    .msg__actions a:hover,
+    .msg__actions button:hover,
+    .about__stage:hover .about__bottle {
+        transform: none;
+    }
+
+    .btn:hover::after {
+        transform: translateX(-130%);
+    }
+
+    .btn:active {
+        transform: scale(.98);
+    }
+}
+
+/* Target sentuh minimal 44px */
+@media (pointer: coarse) {
+
+    .chat__close,
+    .order__close {
+        width: 44px;
+        height: 44px;
+    }
+
+    .order__pick button {
+        min-height: 44px;
+    }
+
+    .chat__quick button,
+    .msg__actions a,
+    .msg__actions button {
+        min-height: 40px;
+    }
+
+    .footer__list a {
+        padding-block: 4px;
+    }
+}
+
+/* Blob blur besar berat di GPU ponsel; perkecil dan jangan melebihi layar */
+@media (max-width: 700px) {
+    .blob--a {
+        width: 320px;
+        height: 320px;
+        right: -120px;
+    }
+
+    .blob--b {
+        width: 260px;
+        height: 260px;
+        left: -120px;
+    }
+
+    .blob--c {
+        width: 300px;
+        height: 300px;
+        margin-left: -150px;
+    }
+
+    .blob {
+        filter: blur(50px);
+    }
+}
+
+/* Ringkasan pesanan sebagai bottom sheet di ponsel */
+@media (max-width: 480px) {
+    .order {
+        padding: 0;
+        place-items: end center;
+    }
+
+    .order__panel {
+        width: 100%;
+        max-height: 92vh;
+        max-height: 92dvh;
+        overscroll-behavior: contain;
+        padding: 30px max(22px, env(safe-area-inset-right)) calc(22px + env(safe-area-inset-bottom, 0px)) max(22px, env(safe-area-inset-left));
+        border-radius: 28px 28px 0 0;
+        transform: translateY(100%);
+    }
+
+    .order__panel .h2 {
+        font-size: 26px;
+        padding-right: 48px;
+    }
+
+    .order__close {
+        top: 14px;
+        right: 14px;
+    }
 }
 
 /* ---------- Animasi scroll ---------- */
